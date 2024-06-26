@@ -5,10 +5,10 @@ app = Flask(__name__)
 api = Api(app)
 
 class HelloWorld(Resource):
-    def get(self, name):
-        return {"data": "Hello World "+name}
+    def get(self, name, id):
+        return {"data": "Hello World "+name, "id": id}
     
-api.add_resource(HelloWorld, "/helloworld/<string:name>")
+api.add_resource(HelloWorld, "/helloworld/<string:name>/<int:id>")
 
 if __name__ == "__main__":
     app.run(debug=True)
