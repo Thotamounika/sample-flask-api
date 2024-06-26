@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_restful import Api, Resource
 
 app = Flask(__name__)
@@ -14,6 +14,11 @@ class Shorts(Resource):
     def get(self, short_id):
         return shorts[short_id]
     
+    def post(self, short_id):
+        print(request.form)
+        return shorts
+    
+ 
 api.add_resource(Shorts, "/shorts/<int:short_id>")
 
 if __name__ == "__main__":
