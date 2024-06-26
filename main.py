@@ -4,17 +4,17 @@ from flask_restful import Api, Resource
 app = Flask(__name__)
 api = Api(app)
 
-persons = {
-    "Harry": {"age": 21, "gender": "male"},
-    "Ron": {"age": 22, "gender": "male"},
-    "Hermoine": {"age": 21, "gender": "female"}
+shorts = {
+    1: {"title": "India won the T20 world cup", "summary": "India won the world cup with a tough fight in T20."},
+    2: {"title": "Nvidia stocks reached market high", "summary": "Nvidia stocks became the most valuable stocks exceeding the Alphabet stocks"},
+    3: {"title": "Self-driving cars Operational in US", "summary": "Now you can go on a rider without a driver. Self-driving cars are operational in US"},
 }
 
-class HelloWorld(Resource):
-    def get(self, name):
-        return persons[name]
+class Shorts(Resource):
+    def get(self, short_id):
+        return shorts[short_id]
     
-api.add_resource(HelloWorld, "/helloworld/<string:name>")
+api.add_resource(Shorts, "/shorts/<int:short_id>")
 
 if __name__ == "__main__":
     app.run(debug=True)
