@@ -20,7 +20,11 @@ shorts = {}
 
 def abort_if_short_id_doesnt_exist(short_id):
     if short_id not in shorts:
-        abort(404, "Short id is not valid..")
+        abort(404,message="Short id is not valid..")
+
+def abort_if_short_id_already_exists(short_id):
+    if short_id in shorts:
+        abort(409,message="Shorts already exist with that ID...")
 
 class Shorts(Resource):
     def get(self, short_id):
@@ -28,9 +32,15 @@ class Shorts(Resource):
         return shorts[short_id]
     
     def post(self, short_id):
+        abort_if_short_id_already_exists(short_id)
         args = shorts_post_args.parse_args()
         shorts[short_id] = args
         return shorts[short_id], 201
+    
+    def delete(self, short_id):
+        abort_if_short_id_doesnt_exist(short_id)
+        del [short_id]
+        return '', 204
     
  
 api.add_resource(Shorts, "/shorts/<int:short_id>")
