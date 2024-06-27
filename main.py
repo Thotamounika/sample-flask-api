@@ -31,13 +31,17 @@ def fetch_all_news():
         'x-api-key': api_key
     }
 
-    response = requests.get(url, headers=headers)
+    # response = requests.get(url, headers=headers)
+    response = requests.get("http://localhost:3000/top_news");
 
     if response.status_code == 200:
-        top_news = response.json().get('top_news', [])
+        # top_news = response.json().get('top_news', []) 
+        # all_news_data = top_news[0].get('news', [])
+        
+        top_news = response.json() 
         all_news_data = top_news[0].get('news', [])
-        # news = all_news_data[0].get('articles', [])
-        result = [{'title': article['title'], 'content': article['text'], 'url': article['url'], 'urlToImage': article['image']} for article in all_news_data if article.get('text')][:5]
+
+        result = [{'id': article['id'], 'title': article['title'], 'content': article['text'], 'url': article['url'], 'urlToImage': article['image']} for article in all_news_data if article.get('text')][:5]
         return result
     else:
         return f"Error: {response.status_code}"
