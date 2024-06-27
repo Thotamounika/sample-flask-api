@@ -25,7 +25,7 @@ NEWS_API_URL = 'https://newsapi.org/v2/top-headlines'
 
 def fetch_all_news():
     url = "https://api.worldnewsapi.com/top-news?source-country=us&language=en&date=2024-05-29"
-    api_key = "a74722d2d47f461e9d8e543ab559aa59"
+    api_key = "68739b9810ef49f9bb44363409fa17e7"
 
     headers = {
         'x-api-key': api_key
