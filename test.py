@@ -7,6 +7,6 @@ print(response.json())
 
 input()
 
-response = requests.get(BASE+"shorts/4")
+response = requests.get(BASE+"shorts/1")
 print(response.json())
 

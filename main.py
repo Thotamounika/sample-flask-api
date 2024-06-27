@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, abort
 from flask_restful import Api, Resource, reqparse
 
 app = Flask(__name__)
@@ -18,8 +18,13 @@ shorts_post_args.add_argument("srcLink", type=str, help="Orginal Source of the n
 
 shorts = {}
 
+def abort_if_short_id_doesnt_exist(short_id):
+    if short_id not in shorts:
+        abort(404, "Short id is not valid..")
+
 class Shorts(Resource):
     def get(self, short_id):
+        abort_if_short_id_doesnt_exist(short_id)
         return shorts[short_id]
     
     def post(self, short_id):
