@@ -22,6 +22,27 @@ shorts = {}
 NEWS_API_KEY = '990ebb54198a49c0923eb18c9a9d2cdb' 
 NEWS_API_URL = 'https://newsapi.org/v2/top-headlines'
 
+
+def fetch_all_news():
+    url = "https://api.worldnewsapi.com/top-news?source-country=us&language=en&date=2024-05-29"
+    api_key = "a74722d2d47f461e9d8e543ab559aa59"
+
+    headers = {
+        'x-api-key': api_key
+    }
+
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        top_news = response.json().get('top_news', [])
+        all_news_data = top_news[0].get('news', [])
+        # news = all_news_data[0].get('articles', [])
+        result = [{'title': article['title'], 'content': article['text'], 'url': article['url'], 'urlToImage': article['image']} for article in all_news_data if article.get('text')][:5]
+        return result
+    else:
+        return f"Error: {response.status_code}"
+
+
 def fetch_news():
     params = {
         'apiKey': NEWS_API_KEY,
@@ -61,10 +82,16 @@ class Shorts(Resource):
         return '', 204
     
  
+# class News(Resource):
+#     def get(self):
+#         news_data = fetch_news()
+#         return news_data
+    
+
 class News(Resource):
     def get(self):
-        news_data = fetch_news()
-        return news_data
+        all_news_data = fetch_all_news()
+        return all_news_data
     
 
 api.add_resource(Shorts, "/shorts/<int:short_id>")
