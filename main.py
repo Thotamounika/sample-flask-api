@@ -1,13 +1,14 @@
-from flask import Flask, request, abort
+from flask import Flask, request, abort, jsonify, render_template
 from flask_restful import Api, Resource, reqparse
+import requests
 
 app = Flask(__name__)
 api = Api(app)
 
 shorts_post_args = reqparse.RequestParser()
 shorts_post_args.add_argument("title", type=str, help="Title of the short", required = True)
-shorts_post_args.add_argument("summary", type=str, help="Summary of the news", required = True)
-shorts_post_args.add_argument("srcLink", type=str, help="Orginal Source of the news article", required = True)
+shorts_post_args.add_argument("content", type=str, help="Summary of the news", required = True)
+shorts_post_args.add_argument("url", type=str, help="Orginal Source of the news article", required = True)
 
 
 # shorts = {
@@ -17,6 +18,23 @@ shorts_post_args.add_argument("srcLink", type=str, help="Orginal Source of the n
 # }
 
 shorts = {}
+
+NEWS_API_KEY = '990ebb54198a49c0923eb18c9a9d2cdb' 
+NEWS_API_URL = 'https://newsapi.org/v2/top-headlines'
+
+def fetch_news():
+    params = {
+        'apiKey': NEWS_API_KEY,
+        'country': 'in',  
+        'category': 'technology'  
+    }
+    response = requests.get(NEWS_API_URL, params=params)
+    if response.status_code == 200:
+        news_data = response.json().get('articles', [])
+        result = [{'title': article['title'], 'content': article.get('content', 'No content available'), 'url': article['url']} for article in news_data if article.get('content')][:5]
+        return result
+    else:
+        abort(response.status_code, message="Failed to fetch news")
 
 def abort_if_short_id_doesnt_exist(short_id):
     if short_id not in shorts:
@@ -39,11 +57,19 @@ class Shorts(Resource):
     
     def delete(self, short_id):
         abort_if_short_id_doesnt_exist(short_id)
-        del [short_id]
+        del shorts[short_id]
         return '', 204
     
  
+class News(Resource):
+    def get(self):
+        news_data = fetch_news()
+        return news_data
+    
+
 api.add_resource(Shorts, "/shorts/<int:short_id>")
+api.add_resource(News, "/news")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
